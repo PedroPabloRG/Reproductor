@@ -1,0 +1,147 @@
+/* Estilos principales para la aplicación */
+
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* Estilo para las pestañas */
+.tab-pane {
+    -fx-tab-min-width: 120px;
+}
+
+.tab {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333;
+}
+
+.tab:selected {
+    -fx-background-color: #fff;
+    -fx-text-fill: #000;
+}
+
+/* Estilo para las listas */
+.list-view {
+    -fx-background-color: #fff;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+}
+
+.list-cell {
+    -fx-padding: 8px;
+}
+
+.list-cell:selected {
+    -fx-background-color: #0078d4;
+    -fx-text-fill: white;
+}
+
+.list-cell:hover {
+    -fx-background-color: #e6f3ff;
+}
+
+/* Estilo para los botones de control */
+.button {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.button:pressed {
+    -fx-background-color: #d0d0d0;
+}
+
+/* Estilo para los sliders */
+.slider {
+    -fx-cursor: hand;
+}
+
+.slider .track {
+    -fx-background-color: #ddd;
+    -fx-background-radius: 2px;
+}
+
+.slider .thumb {
+    -fx-background-color: #0078d4;
+    -fx-background-radius: 50%;
+}
+
+/* Estilo para los campos de texto */
+.text-field {
+    -fx-background-color: #fff;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 8px;
+}
+
+.text-field:focused {
+    -fx-border-color: #0078d4;
+}
+
+/* Estilo para la barra de menú */
+.menu-bar {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.menu {
+    -fx-padding: 5px 10px;
+}
+
+.menu:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* Estilo para las etiquetas de información de canción */
+.song-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.song-artist {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666;
+}
+
+/* Estilo para los controles del reproductor */
+.player-controls {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px 0 0 0;
+    -fx-padding: 15px;
+}
+
+/* Botones específicos del reproductor */
+.play-button {
+    -fx-background-color: #0078d4;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.play-button:hover {
+    -fx-background-color: #106ebe;
+}
+
+.control-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-font-size: 14px;
+}
+
+.control-button:hover {
+    -fx-background-color: #f0f0f0;
+}
