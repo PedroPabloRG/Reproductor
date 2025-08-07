@@ -8,6 +8,7 @@ Un reproductor de música moderno desarrollado en Java utilizando JavaFX para la
 - 🎨 Interfaz gráfica moderna y responsive
 - 📚 Gestión de biblioteca musical con metadatos
 - 📝 Creación y gestión de listas de reproducción
+- 🎤 Editor de letras con almacenamiento en base de datos
 - 🔊 Controles de volumen y progreso
 - 🔀 Modo aleatorio y repetición
 - 🔍 Búsqueda y filtrado de canciones
@@ -23,8 +24,8 @@ Un reproductor de música moderno desarrollado en Java utilizando JavaFX para la
 
 ### 1. Clonar el repositorio
 ```bash
-git clone <repository-url>
-cd ReproductorMusica
+git clone https://github.com/PedroPabloRG/Reproductor.git
+cd Reproductor
 ```
 
 ### 2. Compilar el proyecto
