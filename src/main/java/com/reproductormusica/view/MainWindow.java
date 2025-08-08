@@ -174,9 +174,6 @@ public class MainWindow {
         // Add context menu for right-click actions
         setupLibraryContextMenu();
         
-        // Setup search functionality (after ListView is created)
-        setupSearchField(searchField);
-        
         // Library controls for multiple selection
         HBox libraryControls = new HBox(10);
         libraryControls.setAlignment(Pos.CENTER_LEFT);
@@ -206,11 +203,19 @@ public class MainWindow {
         setupLibrarySelectionHandlers(addToQueueButton, playSelectedButton, 
                                     selectAllButton, clearSelectionButton, selectionCountLabel);
         
-        // Add sample data message
+        // Add empty message with search functionality
         Label emptyMessage = new Label("No hay canciones en la biblioteca.\nUse 'Archivo > Importar archivos...' para agregar música.");
         emptyMessage.setStyle("-fx-text-fill: #666; -fx-text-alignment: center;");
         
-        libraryContent.getChildren().addAll(libraryHeader, searchField, libraryListView, libraryControls, emptyMessage);
+        // Add search results message
+        Label searchResultsMessage = new Label("");
+        searchResultsMessage.setStyle("-fx-text-fill: #888; -fx-text-alignment: center; -fx-font-size: 12px;");
+        searchResultsMessage.setVisible(false);
+        
+        // Update the search field setup to include results feedback
+        setupSearchFieldWithFeedback(searchField, searchResultsMessage, emptyMessage);
+        
+        libraryContent.getChildren().addAll(libraryHeader, searchField, libraryListView, libraryControls, searchResultsMessage, emptyMessage);
         libraryTab.setContent(libraryContent);
         
         // Queue tab
@@ -754,39 +759,87 @@ public class MainWindow {
     }
     
     /**
-     * Configura la funcionalidad de búsqueda
+     * Configura la funcionalidad de búsqueda mejorada con feedback visual
      */
-    private void setupSearchField(TextField searchField) {
+    private void setupSearchFieldWithFeedback(TextField searchField, Label searchResultsMessage, Label emptyMessage) {
         // Create filtered list for search results
-        FilteredList<Song> filteredSongs = 
-            new FilteredList<>(controller.getLibrary());
+        FilteredList<Song> filteredSongs = new FilteredList<>(controller.getLibrary());
         
         // Update list view with filtered results
         libraryListView.setItems(filteredSongs);
         
-        // Add listener for real-time search
+        // Add listener for real-time search with improved performance
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null || newValue.trim().isEmpty()) {
-                // Show all songs when search is empty
-                filteredSongs.setPredicate(null);
-            } else {
-                // Filter songs based on search query
-                String lowercaseQuery = newValue.toLowerCase().trim();
-                filteredSongs.setPredicate(song -> 
-                    (song.getTitle() != null && song.getTitle().toLowerCase().contains(lowercaseQuery)) ||
-                    (song.getArtist() != null && song.getArtist().toLowerCase().contains(lowercaseQuery)) ||
-                    (song.getAlbum() != null && song.getAlbum().toLowerCase().contains(lowercaseQuery)) ||
-                    (song.getGenre() != null && song.getGenre().toLowerCase().contains(lowercaseQuery))
-                );
-            }
+            Platform.runLater(() -> {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    // Show all songs when search is empty
+                    filteredSongs.setPredicate(null);
+                    searchResultsMessage.setVisible(false);
+                    emptyMessage.setVisible(controller.getLibrary().isEmpty());
+                } else {
+                    // Filter songs based on search query (case-insensitive)
+                    String lowercaseQuery = newValue.toLowerCase().trim();
+                    filteredSongs.setPredicate(song -> {
+                        if (song == null) return false;
+                        
+                        return (song.getTitle() != null && song.getTitle().toLowerCase().contains(lowercaseQuery)) ||
+                               (song.getArtist() != null && song.getArtist().toLowerCase().contains(lowercaseQuery)) ||
+                               (song.getAlbum() != null && song.getAlbum().toLowerCase().contains(lowercaseQuery)) ||
+                               (song.getGenre() != null && song.getGenre().toLowerCase().contains(lowercaseQuery)) ||
+                               (song.getFilePath() != null && song.getFilePath().toLowerCase().contains(lowercaseQuery));
+                    });
+                    
+                    // Update search feedback
+                    int resultCount = filteredSongs.size();
+                    int totalCount = controller.getLibrary().size();
+                    
+                    if (resultCount == 0) {
+                        searchResultsMessage.setText("🔍 No se encontraron canciones que coincidan con \"" + newValue + "\"");
+                        searchResultsMessage.setStyle("-fx-text-fill: #ff6b6b; -fx-text-alignment: center; -fx-font-size: 12px;");
+                        searchResultsMessage.setVisible(true);
+                        emptyMessage.setVisible(false);
+                    } else if (resultCount < totalCount) {
+                        searchResultsMessage.setText("🔍 Mostrando " + resultCount + " de " + totalCount + " canciones");
+                        searchResultsMessage.setStyle("-fx-text-fill: #4CAF50; -fx-text-alignment: center; -fx-font-size: 12px;");
+                        searchResultsMessage.setVisible(true);
+                        emptyMessage.setVisible(false);
+                    } else {
+                        searchResultsMessage.setVisible(false);
+                        emptyMessage.setVisible(false);
+                    }
+                }
+            });
         });
         
         // Clear search on Escape key
         searchField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 searchField.clear();
+                searchField.getParent().requestFocus(); // Remove focus from search field
             }
         });
+        
+        // Add search shortcuts
+        searchField.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ESCAPE) {
+                searchField.clear();
+                searchField.getParent().requestFocus();
+            } else if (e.getCode() == KeyCode.ENTER) {
+                // If there's exactly one result, play it
+                if (filteredSongs.size() == 1) {
+                    Song song = filteredSongs.get(0);
+                    controller.playNow(song);
+                    showSelectionActionComplete("Reproduciendo: " + song.getTitle());
+                }
+            }
+        });
+        
+        // Add context menu for search field
+        ContextMenu searchContextMenu = new ContextMenu();
+        MenuItem clearSearchItem = new MenuItem("🗑️ Limpiar búsqueda");
+        clearSearchItem.setOnAction(e -> searchField.clear());
+        searchContextMenu.getItems().add(clearSearchItem);
+        searchField.setContextMenu(searchContextMenu);
     }
     
     /**

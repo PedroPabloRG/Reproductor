@@ -190,5 +190,5 @@ Si encuentras algún problema o tienes sugerencias:
 - [ ] Ecualizador gráfico
 - [ ] Sincronización con servicios en la nube
 - [ ] Plugins y extensiones
-- [ ] Modo oscuro
+- [ ] Modo claro
 - [ ] Soporte para múltiples idiomas
